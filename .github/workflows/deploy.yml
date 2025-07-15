@@ -1,19 +1,19 @@
-name: Deploy to S3
+name: Déployer site statique sur S3
 
 on:
   push:
     branches:
-      - main  # déploie uniquement lors d'un push sur la branche main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout du code
+      - name: Télécharger le code
         uses: actions/checkout@v3
 
-      - name: Synchronisation vers le bucket S3
+      - name: Déployer sur S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --delete
@@ -21,5 +21,5 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'eu-west-3'          # change si nécessaire
-          SOURCE_DIR: './dist'             # ou ./public ou ./build selon ton projet
+          AWS_REGION: 'eu-west-3'         # Change selon ta région
+          SOURCE_DIR: './public'          # Dossier où se trouvent tes fichiers HTML
