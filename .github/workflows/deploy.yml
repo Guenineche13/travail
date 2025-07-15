@@ -3,25 +3,23 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - main
+      - main  # déploie uniquement lors d'un push sur la branche main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout du code
         uses: actions/checkout@v3
 
-      - name: Sync to S3 bucket
+      - name: Synchronisation vers le bucket S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
-          args: --delete  # <-- on a supprimé '--acl public-read'
-
+          args: --delete
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'eu-west-3'  # ou autre région
-          SOURCE_DIR: './dist'     # adapte selon ton dossier de build
-
+          AWS_REGION: 'eu-west-3'          # change si nécessaire
+          SOURCE_DIR: './dist'             # ou ./public ou ./build selon ton projet
