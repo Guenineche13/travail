@@ -121,3 +121,9 @@ Après chaque mise à jour, je vérifie que le site est bien accessible et que l
 
 Pourquoi ?
 Tester permet d’être sûr que mon travail marche bien, et que le site est toujours disponible pour les visiteurs.
+
+## Vidéo de démonstration
+
+Voici une vidéo qui montre que mon projet fonctionne bien :  
+[Voir la vidéo ici](https://drive.google.com/file/d/1ahvaMo8XSjAnH37hkugKq1aAF65rG6OA/view?usp=sharing)
+
