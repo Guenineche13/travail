@@ -1,4 +1,4 @@
-C’était mon premier projet cloud. J’ai fait le déploiement de base sur S3 avec CI/CD, et je suis en train d’apprendre CloudFront, HTTPS, Terraform pour l’améliorer progressivement.
+
 
 
 Projet Hébergement Site Statique AWS S3 avec CI/CD GitHub
