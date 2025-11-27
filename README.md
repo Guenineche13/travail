@@ -5,24 +5,24 @@ Projet Hébergement Site Statique AWS S3 avec CI/CD GitHub
 
 
 
-1. Création d’une page HTML simple
-J’ai choisi de créer une page web simple en HTML, sans base de données, parce que je voulais un site léger et à faible coût. Un site statique est rapide à charger, facile à déployer, et ne nécessite pas de serveur ou base de données, ce qui évite des coûts supplémentaires.
-Pourquoi ? Parce qu’un site statique est simple et efficace, parfait pour mon projet et mes contraintes financières.
+1. Développement du site statique
 
+Création d’un site HTML/CSS léger, optimisé pour un hébergement S3.
 
+Architecture sans back-end → réduction des coûts et amélioration des performances.
 
-3. Création d’un bucket S3 sur AWS
-J’ai créé un bucket sur AWS S3 appelé apple-sitewebaws, qui fonctionne comme un dossier dans le cloud. J’ai activé l’option d’hébergement statique pour pouvoir rendre mon site accessible sur internet.
-Pourquoi ? S3 est un service fiable, économique, et disponible 24h/24 sans que j’aie besoin de gérer un serveur.
+2. Mise en place du bucket S3 (Static Website Hosting)
 
+Création d’un bucket apple-sitewebaws.
 
+Activation du mode Static Website Hosting.
 
-5. Configuration de la policy pour accès public en lecture seule
-J’ai appliqué une policy JSON sur le bucket pour que tout le monde puisse consulter le site, mais personne ne puisse modifier ou supprimer les fichiers.
+Configuration du point d’entrée index.html.
 
-json
-Copier
-Modifier
+Objectif technique : utiliser S3 comme service d’hébergement scalable et hautement disponible, sans serveur.
+
+3. Configuration de la sécurité S3 (Bucket Policy)
+Bucket Policy : Accès public en lecture seule
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -35,16 +35,18 @@ Modifier
     }
   ]
 }
-Pourquoi ? Pour que le site soit visible par tous en lecture seule, et protéger les fichiers contre toute modification accidentelle ou malveillante.
 
 
+Permet uniquement GET.
 
-4. Création d’un utilisateur IAM avec droits limités
-J’ai créé un utilisateur IAM avec uniquement les droits nécessaires pour modifier les fichiers dans mon bucket S3, et rien d’autre.
+Empêche toute modification ou suppression via le public.
 
-json
-Copier
-Modifier
+Principe appliqué : sécurité minimale nécessaire (Least Privilege).
+
+4. Création d’un utilisateur IAM dédié avec permissions S3 limitées
+
+Permissions autorisées :
+
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -62,17 +64,14 @@ Modifier
     }
   ]
 }
-Pourquoi ? C’est important pour la sécurité, afin de ne pas donner plus de droits que nécessaire, et éviter les erreurs ou abus.
 
 
+Objectif : permettre uniquement les actions nécessaires au pipeline CI/CD.
 
+5. Mise en place du pipeline CI/CD avec GitHub Actions
 
-5. Configuration de GitHub Actions pour déployer automatiquement
-J’ai mis en place un workflow GitHub Actions qui se déclenche à chaque fois que je pousse une modification sur la branche principale. Ce workflow synchronise automatiquement les fichiers vers mon bucket S3.
+Workflow déclenché automatiquement sur chaque push dans main.
 
-yaml
-Copier
-Modifier
 name: Deploy to S3
 
 on:
@@ -83,28 +82,44 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
+
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-3
+
       - run: aws s3 sync . s3://apple-sitewebaws --delete
-Pourquoi ? Automatiser le déploiement évite les erreurs humaines, me fait gagner du temps et garantit que la dernière version est toujours en ligne.
 
+Fonctionnement technique
 
+Authentification sécurisée via GitHub Secrets.
 
-6. Stockage des clés AWS dans GitHub Secrets
-Pour que GitHub Actions puisse accéder à AWS, j’ai enregistré mes clés d’accès AWS dans la section secrète “Secrets” de mon dépôt GitHub. Ainsi, mes clés ne sont pas visibles dans le code.
-Pourquoi ? Protéger mes identifiants est essentiel pour éviter tout risque de piratage ou fuite.
+Synchronisation automatique → aws s3 sync.
 
+Suppression des fichiers obsolètes (--delete).
 
+Processus 100% automatisé.
 
-8. Test du fonctionnement
-Après chaque mise à jour, je vérifie que le site est bien accessible et que le déploiement s’est bien passé.
-Pourquoi ? Tester à chaque étape me permet d’être sûre que tout fonctionne correctement et que les visiteurs peuvent accéder au site sans problème.
+6. Tests et validation
+
+Vérification après chaque pipeline : accessibilité du site, cohérence du contenu, statut S3.
+
+Tests de synchronisation GitHub → AWS.
+
+Validation que la policy IAM et les accès publics fonctionnent correctement.
+
+Résultat
+
+Déploiement entièrement automatisé via GitHub Actions.
+
+Architecture serverless économique basée sur S3.
+
+Sécurisation IAM + Bucket Policy selon les bonnes pratiques AWS.
+
+Site statique disponible publiquement avec haute disponibilité.
 
 
 
